@@ -1,0 +1,146 @@
+Gherkin - Business specific human readable language
+	it is with some standard structure
+	it specifies what part
+
+Gherkin has 2 main purpose - serve as project documnetation and also a executable specification that can be automated
+gherkin language is set by cucumber specification
+
+gherkin file represents with .feature file
+
+========================================================================================================================
+What is Feature ?
+
+Feature provides a high level description of the software that needs to be developed
+Every gherkin document must start with  Feature: keyword
+
+every feature can have 2 things - title and description 
+
+Feature: Add to Cart
+	As a customer of xyz app
+	I want to add a product to cart
+	So that i can purchase the product
+
+at run time cucumber ignores feature title and its description
+this information helps in documentation purpose
+
+
+We can have only one feature inside one feature file
+
+we can have multiple user story inside a feature
+
+
+
+We can tag our feature files
+========================================================================================================================
+Scenario
+
+It is similar to testcase that we write to a user story , scenario describes behaviour of system
+	Scenario can have title and desscription same as Feature
+
+the sequence of given when then is important
+
+we can tag the Scenario 
+
+try to make each scenario independent
+
+========================================================================================================================
+Steps
+
+
+Given , When , Then , And , But , *
+
+we can have multiple Given , instead we can use And
+
+Given - is a precondition
+When - Action to be performed
+Then - Expected output
+
+instead of multiple given when then , we can use And and But
+
+
+when we are using list of things like
+And i have bananas
+And i have cucumbers
+And i have grapes
+
+we can use *
+* i have bananas
+* i have cucumbers
+* i have grapes
+========================================================================================================================
+
+Scenario Outline:
+
+same step definitions but different combination of values
+
+
+		Scenario Outline: dummy scenario 2
+			This is a scenario
+			Given my account balance is $<opening balance>
+			When I withdraw $<withdrawal amount>
+			Then the account balance should be $<closing balance>
+
+		@QA
+		Examples:
+			| opening balance | withdrawal amount | closing balance |
+			|	100		|	50		  |	50		  |
+			|	50		|	50		  |	0		  |
+
+		@Stage
+		Examples:
+			| opening balance | withdrawal amount | closing balance |
+			|	100		|	50		  |	50		  |
+			|	50		|	50		  |	0		  |
+
+
+
+========================================================================================================================
+Rule
+
+			Rule: Add from store
+				This is rule number 1
+				Background: Common given steps
+				Scenario: scenario 1
+				Scenario: scenario 2
+				
+			Rule: Add from Product page
+				This is rule number 2
+				Background: Common given steps
+				Scenario: scenario 1
+				Scenario: scenario 2
+
+
+========================================================================================================================
+
+Background:
+
+Feature: dummy feature[title]
+	I want to add product to cart[desc of feature]
+
+	#Background
+	Background: This is a background
+		Given I'm bill
+		And I'm logged in
+		
+		@dummyScenario
+		Scenario: dummy scenario
+			This is a scenario
+			Given my account balance is $100
+			When I withdraw $50
+			Then the account balance should be $50
+
+
+
+
+
+========================================================================================================================
+
+
+
+
+
+
+
+
+
+========================================================================================================================
