@@ -131,16 +131,78 @@ Feature: dummy feature[title]
 
 
 
+we can have one background per feature file [at feature file level]
 
+if we have so many Rule in a feature file then we can have  a  seperate background for Rule
+
+========================================================================================================================
+
+Background tips:
+
+donot over complicate
+only write initial steps
+
+
+opening browser , database connection is not correct to write , write them in hooks
+
+keep it short
+Expressive and vivid
+keep scenarios short
+
+
+
+Feature: dummy feature[title]
+	I want to add product to cart[desc of feature]
+
+	#Background
+	Background: This is a background
+		Given I'm bill
+		And I'm logged in
+		
+		@dummyScenario
+		Scenario: dummy scenario
+			This is a scenario
+			Given my account balance is $100
+			When I withdraw $50
+			Then the account balance should be $50
+			
+			
+		Scenario Outline: dummy scenario 2
+			This is a scenario
+			Given my account balance is $<opening balance>
+			When I withdraw $<withdrawal amount>
+			Then the account balance should be $<closing balance>
+			
+			@QA
+			Examples:
+				| opening balance | withdrawal amount | closing balance |
+				|	100							|	50								|	50							|
+				|	50							|	50								|	0								|
+				
+			@Stage
+			Examples:
+				| opening balance | withdrawal amount | closing balance |
+				|	100							|	50								|	50							|
+				|	50							|	50								|	0								|
 
 ========================================================================================================================
 
 
+@dummyFeatures
+Feature: Add to cart
 
-
-
-
-
+	Scenario: Navigate to store, add a product to the cart, click view cart link to navigate to cart and verify
+		Given I'm on the Home page and I navigate to Store Page by pressing "Store" menu option
+		When I click "Add to cart" button next to the product "Blue Shoes"
+		Then the "Add to cart" button changes and a tick mark is shown on it
+		Then "View cart" link is shown
+		When I click on the "View cart" link
+		Then I'm navigated to the Cart page
+		When I fetch the product name and quantity
+		Then the product name is "Blue Shoes"
+		And the product quantity is 1
 
 
 ========================================================================================================================
+
+A feature can be represented by one or more user stories and not vice versa

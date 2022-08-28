@@ -10,5 +10,12 @@ Feature: Add to cart
 		When I fetch the product name and quantity
 		Then the product name is "Blue Shoes"
 		And the product quantity is 1
-			
-			
+
+
+The above scenario is difficult to maintain
+
+Dont do too many things
+
+general thumb rule is 3 to 5 steps , or upto 8 steps for a scenario
+
+Scenario: Add from store - give name that makes sense
