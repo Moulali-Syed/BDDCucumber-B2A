@@ -1,0 +1,202 @@
+Install maven - dowload apache-maven-version.jar file and set the env variables
+check in cmd , type mvn
+
+============================================================================================================
+run through CLI
+
+
+
+============================================================================================================
+JUnit:
+
+
+https://cucumber.io/docs/cucumber/api
+
+https://cucumber.io/docs/cucumber/api/?lang=java#running-cucumber
+
+
+<dependency>
+    <groupId>io.cucumber</groupId>
+    <artifactId>cucumber-junit</artifactId>
+    <version>7.6.0</version>
+    <scope>test</scope>
+</dependency>
+
+
+cucumber-junit and cucumber-java must be of same version 
+
+package runner;
+
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
+import org.junit.runner.RunWith;
+
+@RunWith(Cucumber.class)
+@CucumberOptions()
+public class JUnitRunnerTest {
+
+}
+
+============================================================================================================
+TestNG
+
+https://github.com/cucumber/cucumber-jvm/tree/main/cucumber-testng
+
+<dependency>
+    <groupId>io.cucumber</groupId>
+    <artifactId>cucumber-testng</artifactId>
+    <version>7.6.0</version>
+</dependency>
+
+
+version must be same as cucumber-java
+
+
+package runner;
+
+import io.cucumber.testng.AbstractTestNGCucumberTests;
+import io.cucumber.testng.CucumberOptions;
+
+
+@CucumberOptions(plugin = "message:target/cucumber-report.ndjson")
+public class TestNGRunnerTest extends AbstractTestNGCucumberTests{
+
+}
+
+
+we can run from cmd - mvn clean test
+============================================================================================================
+junit annotations:
+
+@Before Class @AfterClass 
+
+@Before runs before every Scenario 
+
+
+
+package runner;
+
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+
+@RunWith(Cucumber.class)
+@CucumberOptions()
+public class JUnitRunnerTest {
+
+	@BeforeClass
+	public static void beforeClass() {
+		System.out.println("in before class");
+	}
+	
+	@AfterClass
+	public static void afterClass() {
+		System.out.println("in after class");
+	}
+}
+
+============================================================================================================
+TestNG annotations
+
+package runner;
+
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+
+import io.cucumber.testng.AbstractTestNGCucumberTests;
+import io.cucumber.testng.CucumberOptions;
+
+
+@CucumberOptions(plugin = "message:target/cucumber-report.ndjson")
+public class TestNGRunnerTest extends AbstractTestNGCucumberTests{
+
+	
+	@BeforeClass
+	public static void beforeClass() {
+		System.out.println("Before class");
+	}
+	
+	@AfterClass
+	public static void afterClass() {
+		System.out.println("After class");
+	}
+}
+
+============================================================================================================
+cucumber hooks: Before All and After All -  same as 
+
+
+package runner;
+
+import io.cucumber.java.AfterAll;
+import io.cucumber.java.BeforeAll;
+
+public class CucumberHooks {
+
+	@BeforeAll
+	public static void beforeAll() {
+		System.out.println("In before all");
+	}
+
+	@AfterAll
+	public static void afterAll() {
+		System.out.println("In after all");
+	}
+}
+
+
+
+mvn clean test
+
+============================================================================================================
+
+
+junit supports parallel execution at feature level
+
+
+testng and cli supports parallel execution at scenario level
+
+
+CLI runs only cucumber annoted methods it cant see junit annotated methods
+
+junit runner runs junit @Before as well as cucumber @Before annotations
+
+it is recommended to match the version of all cucumber dependencies
+
+
+Both testng and junit @BeforeClass and @AfterClass annotations happen to share the same name and same functionality
+============================================================================================================
+
+============================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
