@@ -13,14 +13,352 @@ Map<String, Map<String, String>> table
 The simplest way to pass a List<String> to a step definition is to use a data table:
 
 =================================================================================================================================================
+Single row with No Header:
+
+
+
+Feature: learn awesome data table
+
+	Scenario: SINGLE ROW WITH NO HEADER
+		Given mycredentials
+		| john | john123 |
+
+
+package awesomecucumber;
+
+import java.util.List;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.Given;
+
+public class DataTableStepDef1 {
+
+	@Given("mycredentials")
+	public void mycredentials(DataTable dataTable) {
+		List<String> creds = dataTable.values();
+		System.out.println("username = "+creds.get(0));
+		System.out.println("password = "+creds.get(1));
+	}
+
+}
 
 
 
 
+Feature: learn awesome data table
+
+	Scenario: SINGLE ROW WITH NO HEADER
+		Given mycredentials
+		| john    |
+		| john123 |
+
+package awesomecucumber;
+
+import java.util.List;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.Given;
+
+public class DataTableStepDef1 {
+
+	@Given("mycredentials")
+	public void mycredentials(DataTable dataTable) {
+		List<String> creds = dataTable.asList();
+		System.out.println("username = "+creds.get(0));
+		System.out.println("password = "+creds.get(1));
+	}
+
+}
+
+
+
+Feature: learn awesome data table
+
+	Scenario: SINGLE ROW WITH NO HEADER
+		Given mycredentials
+		| john    |	john123 |
+
+package awesomecucumber;
+
+import java.util.List;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.Given;
+
+public class DataTableStepDef1 {
+
+	@Given("mycredentials")
+	public void mycredentials(DataTable dataTable) {
+		List<String> creds = dataTable.row(0);
+		System.out.println("username = "+creds.get(0));
+		System.out.println("password = "+creds.get(1));
+	}
+
+}
+
+=================================================================================================================================================
+Multiple rows with no header:
+
+| john | john123 |
+| bill | bill123 |
+
+
+feature file
+
+Feature: learn awesome data table
+
+	Scenario: SINGLE ROW WITH NO HEADER
+		Given mycredentials
+		| john    |	john123 |
+		| bill    | bill123 |
+
+
+package awesomecucumber;
+
+import java.util.List;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.Given;
+
+public class DataTableStepDef1 {
+
+	@Given("mycredentials")
+	public void mycredentials(DataTable dataTable) {
+		List<List<String>> creds = dataTable.asLists();
+		System.out.println("ROW 0 USERNAME  = " + creds.get(0).get(0));
+		System.out.println("ROW 0 PASSWORD  = " + creds.get(0).get(1));
+		System.out.println("ROW 1 USERNAME = " + creds.get(1).get(0));
+		System.out.println("ROW 1 PASSWORD = " + creds.get(1).get(1));
+	}
+
+}
+
+
+or we can use in stepDef file as
+
+package awesomecucumber;
+
+import java.util.List;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.Given;
+
+public class DataTableStepDef1 {
+
+	@Given("mycredentials")
+	public void mycredentials(List<List<String>> creds) {
+		//List<List<String>> creds = dataTable.asLists();
+		System.out.println("ROW 0 USERNAME  = " + creds.get(0).get(0));
+		System.out.println("ROW 0 PASSWORD  = " + creds.get(0).get(1));
+		System.out.println("ROW 1 USERNAME = " + creds.get(1).get(0));
+		System.out.println("ROW 1 PASSWORD = " + creds.get(1).get(1));
+	}
+
+}
+
+
+even if it is single row above code will work
 
 
 =================================================================================================================================================
 
+Rows with No Header Data Table Type:
+
+package objects;
+
+public class Customer {
+
+	private String username;
+	private String password;
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public Customer(String username,String password) {
+		this.username = username;
+		this.password = password;
+	}
+}
+
+Feature: learn awesome data table
+
+	Scenario: SINGLE ROW WITH NO HEADER
+		Given mycredentials
+		| john    |	john123 |
+
+
+package awesomecucumber;
+
+import java.util.List;
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.en.Given;
+import objects.Customer;
+
+public class DataTableStepDef1 {
+	
+	@DataTableType
+	public Customer customerEntry(List<String> entry) {
+		return new Customer(entry.get(0),entry.get(1));
+	}
+
+	@Given("mycredentials")
+	public void mycredentials(Customer customer) {
+		
+		System.out.println("USERNAME = "+customer.getUsername());
+		System.out.println("PASSWORD = "+customer.getPassword());
+	}
+
+}
+
+
+if we multiple rows in feature file
+
+Feature: learn awesome data table
+
+	Scenario: SINGLE ROW WITH NO HEADER
+		Given mycredentials
+		| john    |	john123 |
+		| bill    | bill123 |
+
+
+package awesomecucumber;
+
+import java.util.List;
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.en.Given;
+import objects.Customer;
+
+public class DataTableStepDef1 {
+	
+	@DataTableType
+	public Customer customerEntry(List<String> entry) {
+		return new Customer(entry.get(0),entry.get(1));
+	}
+
+	@Given("mycredentials")
+	public void mycredentials(List<Customer> customers) {
+		
+		System.out.println("ROW 0 USERNAME = "+customers.get(0).getUsername());
+		System.out.println("ROW 0 PASSWORD = "+customers.get(0).getPassword());
+		
+		System.out.println("ROW 1 USERNAME = "+customers.get(1).getUsername());
+		System.out.println("ROW 1 PASSWORD = "+customers.get(1).getPassword());
+	}
+
+}
+
+================================================================================================================================================
+Single row with header:
+
+| username | password |
+| john     | john123  |
+
+List<List<String>>
+[
+	["username","password"],
+	["john","john123"]
+]
+
+List<Map<String,String>>
+[
+	{"username":"john","password":"john123"}
+]
+
+
+Feature: learn awesome data table
+
+	Scenario: SINGLE ROW WITH NO HEADER
+		Given mycredentials
+		| username | password |
+		| john     |	john123 |
+		| bill     | bill123  |
+
+package awesomecucumber;
+
+import java.util.List;
+import java.util.Map;
+
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.en.Given;
+import objects.Customer;
+
+public class DataTableStepDef1 {
+	
+	@DataTableType
+	public Customer customerEntry(List<String> entry) {
+		return new Customer(entry.get(0),entry.get(1));
+	}
+
+	@Given("mycredentials")
+	public void mycredentials(List<List<String>> customers) {
+		
+//ignore row number 0 as it is header name
+		System.out.println("ROW 0 USERNAME = "+customers.get(1).get(0));
+		System.out.println("ROW 0 PASSWORD = "+customers.get(1).get(1));
+		
+		System.out.println("ROW 1 USERNAME = "+customers.get(2).get(0));
+		System.out.println("ROW 1 PASSWORD = "+customers.get(2).get(1));
+	}
+
+}
+
+
+
+
+Feature: learn awesome data table
+
+	Scenario: SINGLE ROW WITH NO HEADER
+		Given mycredentials
+		| username | password |
+		| john     |	john123 |
+		| bill     | bill123  |
+
+
+package awesomecucumber;
+
+import java.util.List;
+import java.util.Map;
+
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.en.Given;
+import objects.Customer;
+
+public class DataTableStepDef1 {
+
+	@DataTableType
+	public Customer customerEntry(List<String> entry) {
+		return new Customer(entry.get(0), entry.get(1));
+	}
+
+	@Given("mycredentials")
+	public void mycredentials(List<Map<String, String>> customers) {
+
+		System.out.println("ROW 0 USERNAME = " + customers.get(0).get("username"));
+		System.out.println("ROW 0 PASSWORD = " + customers.get(0).get("password"));
+
+		System.out.println("ROW 1 USERNAME = " + customers.get(1).get("username"));
+		System.out.println("ROW 1 PASSWORD = " + customers.get(1).get("password"));
+
+	}
+
+}
+
+
+================================================================================================================================================
+
+
+
+
+================================================================================================================================================
 
 
 
@@ -28,7 +366,17 @@ The simplest way to pass a List<String> to a step definition is to use a data ta
 
 
 
-=================================================================================================================================================
+
+
+================================================================================================================================================
+
+
+
+
+
+
+
+================================================================================================================================================
 
 
 
@@ -37,5 +385,4 @@ The simplest way to pass a List<String> to a step definition is to use a data ta
 
 
 
-
-=================================================================================================================================================
+================================================================================================================================================
