@@ -7,7 +7,7 @@ import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
 
 
-@CucumberOptions(plugin = "message:target/cucumber-report.ndjson")
+@CucumberOptions(plugin = {"pretty", "html:target/cucumber.html"})
 public class TestNGRunnerTest extends AbstractTestNGCucumberTests{
 
 	

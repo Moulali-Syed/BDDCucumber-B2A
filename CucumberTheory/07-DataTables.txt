@@ -1,0 +1,41 @@
+https://cucumber.io/docs/cucumber/api/?lang=java
+
+Data Tables
+Data tables from Gherkin can be accessed by using the DataTable object as the last parameter in a step definition. This conversion can be done either by Cucumber or manually.
+
+Depending on the table shape as one of the following collections:
+
+List<List<String>> table
+List<Map<String, String>> table
+Map<String, String> table
+Map<String, List<String>> table
+Map<String, Map<String, String>> table
+The simplest way to pass a List<String> to a step definition is to use a data table:
+
+=================================================================================================================================================
+
+
+
+
+
+
+=================================================================================================================================================
+
+
+
+
+
+
+
+
+=================================================================================================================================================
+
+
+
+
+
+
+
+
+
+=================================================================================================================================================

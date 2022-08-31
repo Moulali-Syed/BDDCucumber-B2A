@@ -1,0 +1,127 @@
+https://agileforall.com/wp-content/uploads/2011/08/Cucumber-Regular-Expressions-Cheat-Sheet.pdf
+
+to make cucumber understand regular expression we write
+
+
+I see 1 <productName> in the cart  - feature file 
+
+corresoonding step definition
+@Then("^I see (.*) \"([^\"]*)\" in the cart$")
+public void i_see_in_the_cart(Integer int1,String string){
+
+}
+
+================================================================================================================
+
+Cucumber Expressions vs Regular Expressions:
+
+https://github.com/cucumber/cucumber-expressions#readme
+
+
+https://github.com/cucumber/cucumber-expressions/blob/main/java/heuristics.adoc
+
+================================================================================================================
+
+Parameter Types:
+https://github.com/cucumber/cucumber-expressions#readme
+
+@Then("I see {int} {String} to the cart ")
+
+@Then("I see {float} {word} to the cart ")
+================================================================================================================
+Optional Text:
+
+suppose we have steps in feature file as
+
+I see 1 product in the cart
+I see 2 products in the cart
+
+we must define a single stepdef for both
+
+
+use the optional that is use brackets () and write inside it
+
+@Then("I see {int} product(s) in the cart")
+public void i_see_in_the_cart(Integer int1){
+
+}
+
+================================================================================================================
+
+Alternative Text:
+
+sometimes we may want to relax our language, we can say stomach or belly
+
+I have {int} cucumber(s) in my belly/stomach
+
+
+Given Iam on product page
+
+
+Given Iam on Store page
+
+
+we can write stepdef as
+
+@Given("Iam on Store/product page")
+public void iam_on_product_page(){
+
+}
+================================================================================================================
+custom parameter types:
+
+create a package
+
+create a class , create a attribute[instance variable]
+
+create getter and setter methods and define constructor
+
+package objects;
+
+public class Product {
+
+	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public Product(String name) {
+		this.name = name;
+	}
+}
+
+
+say i have a step def as 
+
+@When("I add a {string} to the cart")
+
+this is not readable and i dont know what am i adding over here, to add readability we have created the above class with a getter and setter of it
+now we can use it
+
+@When("I add a {product} to the cart")
+public void i_add_a_to_the_cart(Product product){
+	System.out.println("ProductName"+product.getName());
+}
+
+
+in the stepdef class , we must define a method then only we can get the feature file parameter to stepdef file
+for this add a method with same name as used in the @When("... {product}...) --> that is create a product method
+
+@ParameterType(".*")
+	public Product product(String name){
+		return new Product(name);
+	}
+
+
+we can also use specific ParameterType
+
+@ParamaterType("\"Blue Shoes\"|\"Yellow Shoes\"")
+	public Product product(String name){
+		return new Product(name);
+	}
+================================================================================================================
