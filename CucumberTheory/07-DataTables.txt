@@ -276,7 +276,7 @@ List<Map<String,String>>
 
 Feature: learn awesome data table
 
-	Scenario: SINGLE ROW WITH NO HEADER
+	Scenario: Single row with header
 		Given mycredentials
 		| username | password |
 		| john     |	john123 |
@@ -316,7 +316,7 @@ public class DataTableStepDef1 {
 
 Feature: learn awesome data table
 
-	Scenario: SINGLE ROW WITH NO HEADER
+	Scenario: Single row with header
 		Given mycredentials
 		| username | password |
 		| john     |	john123 |
@@ -354,13 +354,279 @@ public class DataTableStepDef1 {
 
 
 ================================================================================================================================================
+Multiple rows with header: [*************************************mostly used **************************]
+
+Feature: learn awesome data table
+
+	Scenario: Multiple rows with header
+		Given mycredentials
+		| username | password |
+		| john     | john123  |
+		| bill     | bill123  |
+
+
+package awesomecucumber;
+
+import java.util.List;
+import java.util.Map;
+
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.en.Given;
+import objects.Customer;
+
+public class DataTableStepDef1 {
+
+	@DataTableType
+	public Customer customerEntry(List<String> entry) {
+		return new Customer(entry.get(0), entry.get(1));
+	}
+
+	@Given("mycredentials")
+	public void mycredentials(List<Map<String, String>> customers) {
+
+		System.out.println("ROW 0 USERNAME = " + customers.get(0).get("username"));
+		System.out.println("ROW 0 PASSWORD = " + customers.get(0).get("password"));
+
+		System.out.println("ROW 1 USERNAME = " + customers.get(1).get("username"));
+		System.out.println("ROW 1 PASSWORD = " + customers.get(1).get("password"));
+
+	}
+
+}
+
+
+
+================================================================================================================================================
+Row with Header DataTable Type:
+
+
+Feature: learn awesome data table
+
+	Scenario: Row with Header DataTable 
+		Given mycredentials
+		| username | password |
+		| john     |	john123 |
+
+
+package awesomecucumber;
+
+import java.util.List;
+import java.util.Map;
+
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.en.Given;
+import objects.Customer;
+
+public class DataTableStepDef1 {
+
+	@DataTableType
+	public Customer customerEntry(Map<String, String> entry) {
+		return new Customer(entry.get("username"), entry.get("password"));
+	}
+
+	@Given("mycredentials")
+	public void mycredentials(Customer customer) {
+
+		System.out.println("ROW 0 USERNAME = " + customer.getUsername());
+		System.out.println("ROW 0 PASSWORD = " + customer.getPassword());
+
+	}
+
+}
+
+
+
+Feature: learn awesome data table
+
+	Scenario: Row with Header DataTable 
+		Given mycredentials
+		| username | password |
+		| john     |	john123 |
+		| bill     |  bill123 |
+
+
+
+package awesomecucumber;
+
+import java.util.List;
+import java.util.Map;
+
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.en.Given;
+import objects.Customer;
+
+public class DataTableStepDef1 {
+
+	@DataTableType
+	public Customer customerEntry(Map<String, String> entry) {
+		return new Customer(entry.get("username"), entry.get("password"));
+	}
+
+	@Given("mycredentials")
+	public void mycredentials(List<Customer> customer) {
+
+		System.out.println("ROW 0 USERNAME = " + customer.get(0).getUsername());
+		System.out.println("ROW 0 PASSWORD = " + customer.get(0).getPassword());
+		
+		
+		System.out.println("ROW 0 USERNAME = " + customer.get(1).getUsername());
+		System.out.println("ROW 0 PASSWORD = " + customer.get(1).getPassword());
+
+	}
+
+}
+
 
 
 
 
 ================================================================================================================================================
+Single column with no header:
+
+Feature: learn awesome data table
+
+	Scenario: SINGLE COLUMN WITH NO HEADER
+		Given mycredentials
+		
+		| john     |
+		| john123  |
+
+package awesomecucumber;
+
+import java.util.List;
+import java.util.Map;
+
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.en.Given;
+import objects.Customer;
+
+public class DataTableStepDef1 {
+
+	@Given("mycredentials")
+	public void mycredentials(List<String> customer) {
+
+		System.out.println(" USERNAME = " + customer.get(0));
+		System.out.println(" PASSWORD = " + customer.get(1));
+	}
+
+}
 
 
+Feature: learn awesome data table
+
+	Scenario: SINGLE COLUMN WITH NO HEADER
+		Given mycredentials
+		
+		| john     |
+		| john123  |
+
+
+package awesomecucumber;
+
+import java.util.List;
+import java.util.Map;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.en.Given;
+import objects.Customer;
+
+public class DataTableStepDef1 {
+
+	@Given("mycredentials")
+	public void mycredentials(DataTable dataTable) {
+
+		List<String> customer = dataTable.asList();
+		System.out.println(" USERNAME = " + customer.get(0));
+		System.out.println(" PASSWORD = " + customer.get(1));
+	}
+
+}
+
+
+
+================================================================================================================================================
+Single column with header
+
+		| username | password |
+		| john123  | john123  |
+
+{"username":"john","password":"john123"} ---internally map
+
+
+Feature: learn awesome data table
+
+	Scenario: SINGLE COLUMN WITH NO HEADER
+		Given mycredentials
+		
+		| username | password |
+		| john123  | john123  |
+		
+
+package awesomecucumber;
+
+import java.util.List;
+import java.util.Map;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.en.Given;
+import objects.Customer;
+
+public class DataTableStepDef1 {
+
+	@Given("mycredentials")
+	public void mycredentials(DataTable dataTable) {
+
+		Map<String,String> customer = dataTable.asMap();
+		System.out.println(" USERNAME = " + customer.get("username"));
+		System.out.println(" PASSWORD = " + customer.get("password"));
+	}
+
+}
+
+
+================================================================================================================================================
+Single column with no header data table type:
+
+Feature: learn awesome data table
+
+	Scenario: SINGLE COLUMN WITH NO HEADER
+		Given mycredentials
+		
+		| john     |
+		| john123  |
+
+
+package awesomecucumber;
+
+import java.util.List;
+import java.util.Map;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.Transpose;
+import io.cucumber.java.en.Given;
+import objects.Customer;
+
+public class DataTableStepDef1 {
+
+	@DataTableType
+	public Customer customerEntry(List<String> entry) {
+		return new Customer(entry.get(0), entry.get(1));
+	}
+
+	@Given("mycredentials")
+	public void mycredentials(@Transpose Customer customer) {
+
+		System.out.println(" USERNAME = " + customer.getUsername());
+		System.out.println(" PASSWORD = " + customer.getPassword());
+	}
+
+}
+
+================================================================================================================================================
+Single column with Header Data table type:
 
 
 
@@ -369,8 +635,6 @@ public class DataTableStepDef1 {
 
 
 ================================================================================================================================================
-
-
 
 
 
