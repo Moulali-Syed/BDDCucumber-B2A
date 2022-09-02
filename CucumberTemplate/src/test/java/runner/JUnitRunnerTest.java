@@ -12,7 +12,7 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
 @CucumberOptions(plugin = { "pretty", "html:target/cucumber.html",
 		"summary" }, snippets = CAMELCASE, dryRun = false, monochrome = false
 		,tags="@Scenario1",
-		glue="awesomecucumber",
+		glue={"awesomecucumber","hooks"},
 		features = "resourceFiles") // -----[1]
 public class JUnitRunnerTest {
 

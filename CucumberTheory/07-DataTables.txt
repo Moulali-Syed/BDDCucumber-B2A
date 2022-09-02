@@ -629,16 +629,83 @@ public class DataTableStepDef1 {
 Single column with Header Data table type:
 
 
+column with header is converted to row with header by using Transpose
+
+
+Feature: learn awesome data table
+
+	Scenario: SINGLE COLUMN WITH HEADER
+		Given mycredentials
+		
+		| username	   | john |
+		| password     | john123 |
+
+
+package awesomecucumber;
+
+import java.util.List;
+import java.util.Map;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.Transpose;
+import io.cucumber.java.en.Given;
+import objects.Customer;
+
+public class DataTableStepDef1 {
+
+	@DataTableType
+	public Customer customerEntry(Map<String,String> entry) {
+		return new Customer(entry.get("username"), entry.get("password"));
+	}
+
+	@Given("mycredentials")
+	public void mycredentials(@Transpose Customer customer) {
+
+		System.out.println(" USERNAME = " + customer.getUsername());
+		System.out.println(" PASSWORD = " + customer.getPassword());
+	}
+
+}
 
 
 
+we can also write below way
+
+package awesomecucumber;
+
+import java.util.List;
+import java.util.Map;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.Transpose;
+import io.cucumber.java.en.Given;
+import objects.Customer;
+
+public class DataTableStepDef1 {
+
+	@DataTableType
+	public Customer customerEntry(DataTable dataTable) {
+		
+		return new Customer(dataTable.row(0).get(1), dataTable.row(1).get(1));
+	}
+
+	@Given("mycredentials")
+	public void mycredentials(Customer customer) {
+
+		System.out.println(" USERNAME = " + customer.getUsername());
+		System.out.println(" PASSWORD = " + customer.getPassword());
+	}
+
+}
 
 
 ================================================================================================================================================
 
+Data Table is not used to drive the scenario data table is used as a step argument to send complex data to a step
 
-
-
+cucumber supports List<List<String>> for automatic data table conversion
 
 ================================================================================================================================================
 

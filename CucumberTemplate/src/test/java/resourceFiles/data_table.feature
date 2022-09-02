@@ -1,7 +1,7 @@
 Feature: learn awesome data table
 
-	Scenario: SINGLE COLUMN WITH NO HEADER
+	Scenario: SINGLE COLUMN WITH HEADER
 		Given mycredentials
 		
-		| john		 |
-		| john123  |
+		| username		 | john |
+		| password     | john123 |

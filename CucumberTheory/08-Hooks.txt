@@ -1,0 +1,226 @@
+Hooks
+
+From cucumber 7 we have @BeforeAll and @AfterAll
+@BeforeAll will run before all the scenarios
+@AfterAll will run after all the scenarios
+
+@Before , @After this will run for each scenario
+if we have a scenario outline then this will execute for each of the examples , means runs multiple times for each set of data
+
+
+package hooks;
+
+import io.cucumber.java.After;
+import io.cucumber.java.AfterAll;
+import io.cucumber.java.Before;
+import io.cucumber.java.BeforeAll;
+import io.cucumber.java.Scenario;
+
+public class CucumberHooks {
+
+	@BeforeAll
+	public static void beforeAll() {
+		System.out.println("\n In before all \n");
+	}
+	
+	@AfterAll
+	public static void afterAll() {
+		System.out.println("\nIn after all\n");
+	}
+	
+	@Before
+	public void before(Scenario scenario) {
+		System.out.println("\nIn Before hook\n");
+		
+		//we can use Scenario object to get screenshot , method name
+		System.out.println("Scenario name = "+scenario.getName());
+		System.out.println("Scenario line = "+scenario.getLine());
+		System.out.println("Scenario tags = "+scenario.getSourceTagNames());
+		System.out.println("Scenario status = "+scenario.getStatus());
+		System.out.println("Scenario URI = "+scenario.getUri());
+		System.out.println("Scenario isFailed = "+scenario.isFailed()+"\n");
+		
+		
+	}
+	
+	@After
+	public void after(Scenario scenario) {
+		System.out.println("\n In After hook \n");
+		
+		//we can use Scenario object to get screenshot , method name
+		System.out.println("Scenario name = "+scenario.getName());
+		System.out.println("Scenario line = "+scenario.getLine());
+		System.out.println("Scenario tags = "+scenario.getSourceTagNames());
+		System.out.println("Scenario status = "+scenario.getStatus());
+		System.out.println("Scenario URI = "+scenario.getUri());
+		System.out.println("Scenario isFailed = "+scenario.isFailed()+"\n");
+	}
+}
+
+======================================================================================================================================================
+ordered:
+we can order the hooks
+
+for before hook - sequence of execution is 0,1,...
+for after hook - sequence of execution is ... 1,0 [that is reverse order]
+
+
+@After hook will run irrespective of status of scenario
+
+
+package hooks;
+
+import io.cucumber.java.After;
+import io.cucumber.java.AfterAll;
+import io.cucumber.java.Before;
+import io.cucumber.java.BeforeAll;
+import io.cucumber.java.Scenario;
+
+public class CucumberHooks {
+
+	@BeforeAll
+	public static void beforeAll() {
+		System.out.println("\n In before all \n");
+	}
+	
+	@AfterAll
+	public static void afterAll() {
+		System.out.println("\nIn after all\n");
+	}
+	
+	@Before(order = 1)
+	public void before1(Scenario scenario) {
+		System.out.println("\nIn Before hook\n");	
+		
+	}
+	
+	@After(order = 1)
+	public void after1(Scenario scenario) {
+		System.out.println("\n In After hook \n");
+		
+	}
+	@Before(order = 0)
+	public void before(Scenario scenario) {
+		System.out.println("\nIn Before hook\n");
+		
+	}
+	
+	@After(order = 0)
+	public void after(Scenario scenario) {
+		System.out.println("\n In After hook \n");
+	}
+}
+======================================================================================================================================================
+Tagged:
+
+we can have different @Before and @After for scenarios by using tags
+
+package hooks;
+
+import io.cucumber.java.After;
+import io.cucumber.java.AfterAll;
+import io.cucumber.java.Before;
+import io.cucumber.java.BeforeAll;
+import io.cucumber.java.Scenario;
+
+public class CucumberHooks {
+
+	@BeforeAll
+	public static void beforeAll() {
+		System.out.println("\n In before all \n");
+	}
+	
+	@AfterAll
+	public static void afterAll() {
+		System.out.println("\nIn after all\n");
+	}
+	
+	@Before("@scenario1")
+	public void before1(Scenario scenario) {
+		System.out.println("\nIn Before hook\n");
+		
+	}
+	
+	@After("@scenario1")
+	public void after1(Scenario scenario) {
+		System.out.println("\n In After hook \n");
+		
+	}
+	@Before("@scenario2")
+	public void before(Scenario scenario) {
+		System.out.println("\nIn Before hook\n");	
+		
+	}
+	
+	@After("@scenario2")
+	public void after(Scenario scenario) {
+		System.out.println("\n In After hook \n");
+	}
+}
+
+
+======================================================================================================================================================
+
+@BeforeStep and @AfterStep - runs for each step in scenario
+
+
+package hooks;
+
+import io.cucumber.java.After;
+import io.cucumber.java.AfterAll;
+import io.cucumber.java.AfterStep;
+import io.cucumber.java.Before;
+import io.cucumber.java.BeforeAll;
+import io.cucumber.java.BeforeStep;
+import io.cucumber.java.Scenario;
+
+public class CucumberHooks {
+
+	@BeforeAll
+	public static void beforeAll() {
+		System.out.println("\n In before all \n");
+	}
+	
+	@AfterAll
+	public static void afterAll() {
+		System.out.println("\nIn after all\n");
+	}
+	
+	@Before("@scenario1")
+	public void before1(Scenario scenario) {
+		System.out.println("\nIn Before hook\n");
+		
+		
+	}
+	
+	@After("@scenario1")
+	public void after1(Scenario scenario) {
+		System.out.println("\n In After hook \n");
+	}
+	@Before("@scenario2")
+	public void before(Scenario scenario) {
+		System.out.println("\nIn Before hook\n");
+		
+	}
+	
+	@After("@scenario2")
+	public void after(Scenario scenario) {
+		System.out.println("\n In After hook \n");
+	
+	}
+	
+	@BeforeStep
+	public void beforeStep() {
+		System.out.println("\n In before step \n");
+	}
+	
+	@AfterStep
+	public void afterStep() {
+		System.out.println("\n In after step \n");
+	}
+}
+
+BeforeStep takes - Scenario type as an argument
+
+======================================================================================================================================================
+
