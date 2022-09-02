@@ -1,0 +1,30 @@
+Framework architecture:
+
+Cucumber +Selenium + Rest Assured
+
+	We have Feature files - that has gherkin
+		  glue code     - Step definitions
+		  Webdriver initilaized in Hooks  - we have Before hook : to initialize driver , After hook to quit driver
+					WebDriver is supplied from Page Factory
+					WebDriver is sent to PageObjects , PageObjects represent pages from application
+					Driver Object is sent to base Page - in BasePage we initialize page factory elements
+					Page Objects will be sub classes of basePage
+
+
+		We create Domain Objects , create custom types to convert them from gherkin
+
+
+		RestAssured - we have Requests , Add APIs , Cookies 
+
+		We use TestContext - Dependency Injection [pico container]
+
+		We also use common 
+				config properties , Test Data(JSON) , Utilities (Faker, Jackson, Cookies , Properties) , constants
+
+		Runners we use JUNit TestNG cucumber
+		CICD -  use Maven , same commands use in jenkins
+			we use GIT
+
+		Reports - Serenity
+
+we follow SRP
