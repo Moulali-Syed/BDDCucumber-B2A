@@ -1,3 +1,62 @@
+create a package inside src/test/java/awesomecucumber - name it factory
+Create a class - DriverFactory
+
+
+
+package awesomecucumber.factory;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class DriverFactory {
+
+	private static WebDriver driver;
+
+	public static WebDriver initializeDriver() {
+		WebDriverManager.chromedriver().setup();
+		driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		return driver;
+	}
+
+	public static WebDriver getDriver() {
+		return driver;
+	}
+}
+
+
+
+
+Create a package hooks inside src/test/java/awesomecucumber
+
+package awesomecucumber.hooks;
+
+import org.openqa.selenium.WebDriver;
+
+import awesomecucumber.factory.DriverFactory;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+
+public class MyHooks {
+
+	private WebDriver driver;
+	
+	@Before
+	public void before() {
+		driver = DriverFactory.initializeDriver();
+	}
+	
+	
+	@After
+	public void after() {
+		driver.quit();
+	}
+}
+
+
+
 package awesomecucumber;
 
 import java.util.List;
@@ -9,7 +68,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 
 import awesomecucumber.factory.DriverFactory;
-import awesomecucumber.pages.StorePage;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -19,17 +77,21 @@ import junit.framework.Assert;
 public class MyStepDefinitions {
 
 	private WebDriver driver;
-	
 	@Given("I'm on the Store Page")
 	public void i_m_on_the_store_page() {
-		driver = DriverFactory.getDriver();
-		new StorePage(driver).load("https://askomdch.com/store");
+		driver = DriverFactory.getDriver();		//-------------------------------------------------------------------[1]
+		driver.get("https://askomdch.com/store");
 	}
 
 	@When("I add a {string} to the cart")
-	public void i_add_a_to_the_cart(String productName) {
+	public void i_add_a_to_the_cart(String productName) throws InterruptedException {
 
-		new StorePage(driver).addToCart(productName);
+		By addToCartBtn = By.cssSelector("a[aria-label='Add “"+productName+"” to your cart']");
+		driver.findElement(addToCartBtn).click();
+		
+		By viewCartLink = By.cssSelector("a[title='View cart']");
+		Thread.sleep(5000);
+		driver.findElement(viewCartLink).click();
 	}
 
 	@Then("I should see {int} {string} in the cart")
@@ -45,13 +107,18 @@ public class MyStepDefinitions {
 	
 	@Given("I'm guest customer")
 	public void i_m_guest_customer() {
-		driver = DriverFactory.getDriver();
-		new StorePage(driver).load("https://askomdch.com/store");   
+		driver = DriverFactory.getDriver(); 		//-------------------------------------------------------[2]
+		driver.get("https://askomdch.com/store");   
 	}
 
 	@Given("I have a product in the cart")
 	public void i_have_a_product_in_the_cart() throws InterruptedException {
-		new StorePage(driver).addToCart("Blue Shoes");
+		By addToCartBtn = By.cssSelector("a[aria-label='Add “Blue Shoes” to your cart']");
+		driver.findElement(addToCartBtn).click();
+		
+		By viewCartLink = By.cssSelector("a[title='View cart']");
+		Thread.sleep(5000);
+		driver.findElement(viewCartLink).click();
 	}
 
 	@Given("I'm on the checkout page")
