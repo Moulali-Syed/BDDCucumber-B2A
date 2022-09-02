@@ -1,0 +1,41 @@
+We can use tags at feature level
+rule level
+scenario, scenario Outline level , Examples level
+
+@featuretag @featuretag1
+Feature: Add to cart
+	@ruletag
+	Rule: Add from store
+	
+	@Scenario1
+	Scenario Outline: Add one quantity to the cart
+		Given I'm on the Store page
+		When I add a "<product_name>" to the cart
+		Then I see 1 "<product_name>" in the Cart
+		
+		@stage
+		Examples:
+			| product_name |
+			| Blue Shoes   |
+			
+		@prod
+		Examples:
+			| product_name |
+			| Green Shoes  |
+
+================================================================================================================================================================
+Tags Inheritance and Execution:
+
+in runner class - tags="@featuretag"
+
+tags = "@stage or @featuretag"
+
+tags = "@stage and @featuretag"
+
+tags = "@stage and not @featuretag"
+
+================================================================================================================================================================
+
+
+Tags serve two purposes execute a subset of scenarios and execute tagged hooks
+
