@@ -16,7 +16,7 @@ import junit.framework.Assert;
 
 public class MyStepDefinitions {
 
-	private WebDriver driver;
+	private static WebDriver driver;
 	@Given("I'm on the Store Page")
 	public void i_m_on_the_store_page() {
 		WebDriverManager.chromedriver().setup();
@@ -50,10 +50,10 @@ public class MyStepDefinitions {
 	
 	@Given("I'm guest customer")
 	public void i_m_guest_customer() {
-		WebDriverManager.chromedriver().setup();
-
-		driver = new ChromeDriver();
-		driver.manage().window().maximize();
+//		WebDriverManager.chromedriver().setup();
+//
+//		driver = new ChromeDriver();
+//		driver.manage().window().maximize();
 		driver.get("https://askomdch.com/store");   
 	}
 

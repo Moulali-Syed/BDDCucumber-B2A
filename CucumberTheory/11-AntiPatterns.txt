@@ -1,0 +1,35 @@
+follow domain concepts
+like store page , product page ,checkout page
+
+In our previous code we have the code for browser invoke , we have used the same code 2 times
+insted we can mark the WebDriver driver as static , by this once it get initalized it can be used by all methods in the class
+
+By marking static , still we have issue that we cannot run individual feature files and also we must maintain the order of execution
+else will get a NullPointerException of the driver
+
+
+Thus we must come up with driver initialization
+
+
+follow page object model design pattern , to overcome duplication of web elements
+
+
+Donot use static wait , thread.sleep - never use this
+use implicit, explicit waits 
+
+
+use domain objects- is what BDD being built for
+
+
+Dependent scenarios - not make scenarios dependent
+driver instance, application state , user state , test data
+
+
+Using UI for creating application state
+
+
+multi browser support
+multi env support should be there for our framework
+
+
+
