@@ -19,7 +19,14 @@ import junit.framework.Assert;
 public class MyStepDefinitions {
 
 	private WebDriver driver;
-
+	private String billingFirstName;
+	private String billingLastName;
+	private String billingAddressOne;
+	private String billingCity;
+	private String billingStateName;
+	private String billingZip;
+	private String billingEmail;
+	
 	@Given("I'm on the Store Page")
 	public void i_m_on_the_store_page() {
 		driver = DriverFactory.getDriver();
@@ -80,5 +87,17 @@ public class MyStepDefinitions {
 	public void the_order_should_be_placed_successfully() {
 
 		Assert.assertEquals("Thank you. Your order has been received.", new CheckoutPage(driver).getNotice());
+	}
+	
+	//lets create a step
+	@Given("my billing details are")
+	public void my_billing_details_are(List<Map<String, String>> billingDetails) {
+		billingFirstName = billingDetails.get(0).get("firstname");
+		billingLastName = billingDetails.get(0).get("lastname");
+		billingAddressOne = billingDetails.get(0).get("address_line1");
+		billingCity = billingDetails.get(0).get("city");
+		billingStateName = billingDetails.get(0).get("state");
+		billingZip = billingDetails.get(0).get("zip");
+		billingEmail = billingDetails.get(0).get("email");
 	}
 }
