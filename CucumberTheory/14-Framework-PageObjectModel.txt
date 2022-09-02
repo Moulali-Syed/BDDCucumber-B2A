@@ -165,3 +165,238 @@ public class MyStepDefinitions {
 	    Assert.assertEquals("Thank you. Your order has been received.", actualNoticeMsg);
 	}
 }
+
+Cart Page
+
+package awesomecucumber.pages;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+public class CartPage extends BasePage {
+
+	public CartPage(WebDriver driver) {
+		super(driver);
+	}
+
+	@FindBy(css = "td[class='product-name'] a")
+	private WebElement productNameFld;
+
+	@FindBy(css = "input[type='number']")
+	private WebElement productQuantityFld;
+
+	public String getProductName() {
+		return wait.until(ExpectedConditions.visibilityOf(productNameFld)).getText();
+	}
+
+	public int getProductQuantity() {
+		return Integer.parseInt(wait.until(ExpectedConditions.visibilityOf(productQuantityFld)).getAttribute("value"));
+	}
+
+}
+
+in stepdef file
+	@Then("I should see {int} {string} in the cart")
+	public void i_should_see_in_the_cart(int quantity, String productName) {
+		CartPage cartPage = new CartPage(driver);
+		
+		Assert.assertEquals(productName, cartPage.getProductName());
+		Assert.assertEquals(quantity,cartPage.getProductQuantity());
+	}
+
+
+CheckoutPage
+
+package awesomecucumber.pages;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+
+public class CheckoutPage extends BasePage {
+
+	public CheckoutPage(WebDriver driver) {
+		super(driver);
+	}
+
+	@FindBy(id = "billing_first_name")
+	private WebElement billingFirstnameFld;
+	@FindBy(id = "billing_last_name")
+	private WebElement billingLastNameFld;
+	@FindBy(id = "billing_address_1")
+	private WebElement billingAddressOneFld;
+	@FindBy(id = "billing_city")
+	private WebElement billingCityFld;
+	@FindBy(id = "billing_state")
+	private WebElement billingStateDropDown;
+	@FindBy(id = "billing_postcode")
+	private WebElement billingZipFld;
+	@FindBy(id = "billing_email")
+	private WebElement billingEmailFld;
+
+	@FindBy(id = "place_order")
+	private WebElement placeOrderBtn;
+	@FindBy(css = ".woocommerce-notice")
+	private WebElement noticeTxt;
+	
+	public CheckoutPage enterBillingFirstName(String billingFirstName) {
+		WebElement e = wait.until(ExpectedConditions.visibilityOf(billingFirstnameFld));
+		e.clear();
+		e.sendKeys(billingFirstName);
+		return this;
+	}
+	
+	public CheckoutPage enterBillingLastName(String billingLastName) {
+		WebElement e = wait.until(ExpectedConditions.visibilityOf(billingLastNameFld));
+		e.clear();
+		e.sendKeys(billingLastName);
+		return this;
+	}
+	
+	public CheckoutPage enterBillingAddressLineOne(String billingAddressLineOne) {
+		WebElement e = wait.until(ExpectedConditions.visibilityOf(billingAddressOneFld));
+		e.clear();
+		e.sendKeys(billingAddressLineOne);
+		return this;
+	}
+	
+	public CheckoutPage enterBillingCity(String billingCity) {
+		WebElement e = wait.until(ExpectedConditions.visibilityOf(billingCityFld));
+		e.clear();
+		e.sendKeys(billingCity);
+		return this;
+	}
+	
+	public CheckoutPage selectBillingState(String billingStateName) {
+		Select select = new Select(wait.until(ExpectedConditions.visibilityOf(billingStateDropDown)));
+		select.selectByVisibleText(billingStateName);
+		return this;
+	}
+	
+	public CheckoutPage enterBillingZip(String billingZip) {
+		WebElement e = wait.until(ExpectedConditions.visibilityOf(billingZipFld));
+		e.clear();
+		e.sendKeys(billingZip);
+		return this;
+	}
+	
+	public CheckoutPage enterBillingEmail(String billingEmail) {
+		WebElement e = wait.until(ExpectedConditions.visibilityOf(billingEmailFld));
+		e.clear();
+		e.sendKeys(billingEmail);
+		return this;
+	}
+	
+	//Builder Pattern
+	public CheckoutPage setBillingDetails(String billingFirstName, String billingLastName,
+			String billingAddressOne, String billingCity,
+			String billingStateName , String billingZip,
+			String billingEmail) {
+		return enterBillingFirstName(billingFirstName).enterBillingLastName(billingLastName)
+				.enterBillingAddressLineOne(billingAddressOne)
+				.enterBillingCity(billingCity)
+				.selectBillingState(billingStateName)
+				.enterBillingZip(billingZip)
+				.enterBillingEmail(billingEmail);
+	}
+	
+	public CheckoutPage placeOrder() {
+		wait.until(ExpectedConditions.elementToBeClickable(placeOrderBtn)).click();
+		return this;
+	}
+	
+	public String getNotice() {
+		return wait.until(ExpectedConditions.visibilityOf(noticeTxt)).getText();
+	}
+}
+
+
+package awesomecucumber;
+
+import java.util.List;
+import java.util.Map;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.Select;
+
+import awesomecucumber.factory.DriverFactory;
+import awesomecucumber.pages.CartPage;
+import awesomecucumber.pages.CheckoutPage;
+import awesomecucumber.pages.StorePage;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import junit.framework.Assert;
+
+public class MyStepDefinitions {
+
+	private WebDriver driver;
+
+	@Given("I'm on the Store Page")
+	public void i_m_on_the_store_page() {
+		driver = DriverFactory.getDriver();
+		new StorePage(driver).load("https://askomdch.com/store");
+	}
+
+	@When("I add a {string} to the cart")
+	public void i_add_a_to_the_cart(String productName) {
+
+		new StorePage(driver).addToCart(productName);
+	}
+
+	@Then("I should see {int} {string} in the cart")
+	public void i_should_see_in_the_cart(int quantity, String productName) {
+		CartPage cartPage = new CartPage(driver);
+
+		Assert.assertEquals(productName, cartPage.getProductName());
+		Assert.assertEquals(quantity, cartPage.getProductQuantity());
+	}
+
+	@Given("I'm guest customer")
+	public void i_m_guest_customer() {
+		driver = DriverFactory.getDriver();
+		new StorePage(driver).load("https://askomdch.com/store");
+	}
+
+	@Given("I have a product in the cart")
+	public void i_have_a_product_in_the_cart() throws InterruptedException {
+		new StorePage(driver).addToCart("Blue Shoes");
+	}
+
+	@Given("I'm on the checkout page")
+	public void i_m_on_the_checkout_page() {
+		
+		new CartPage(driver).checkout();
+	}
+
+	@When("I provide billing details")
+	public void i_provide_billing_details(List<Map<String, String>> billingDetails) {
+
+		CheckoutPage checkoutPage = new CheckoutPage(driver);
+
+//		checkoutPage.enterBillingFirstName(billingDetails.get(0).get("firstName"));
+		// like above we can call individual methods or use a single method
+
+		checkoutPage.setBillingDetails(billingDetails.get(0).get("firstname"), billingDetails.get(0).get("lastname"),
+				billingDetails.get(0).get("address_line1"), billingDetails.get(0).get("city"),
+				billingDetails.get(0).get("state"), billingDetails.get(0).get("zip"),
+				billingDetails.get(0).get("email"));
+	}
+
+	@When("I place an order")
+	public void i_place_an_order() {
+		new CheckoutPage(driver).placeOrder();
+	}
+
+	@Then("the order should be placed successfully")
+	public void the_order_should_be_placed_successfully() {
+
+		Assert.assertEquals("Thank you. Your order has been received.", new CheckoutPage(driver).getNotice());
+	}
+}
+

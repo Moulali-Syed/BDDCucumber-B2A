@@ -5,21 +5,21 @@ import java.util.Map;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 
 import awesomecucumber.factory.DriverFactory;
+import awesomecucumber.pages.CartPage;
+import awesomecucumber.pages.CheckoutPage;
 import awesomecucumber.pages.StorePage;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import junit.framework.Assert;
 
 public class MyStepDefinitions {
 
 	private WebDriver driver;
-	
+
 	@Given("I'm on the Store Page")
 	public void i_m_on_the_store_page() {
 		driver = DriverFactory.getDriver();
@@ -34,19 +34,16 @@ public class MyStepDefinitions {
 
 	@Then("I should see {int} {string} in the cart")
 	public void i_should_see_in_the_cart(int quantity, String productName) {
-		By productNameFld = By.cssSelector("td[class='product-name'] a");
-		String actualProductName = driver.findElement(productNameFld).getText();
-		By productQuantityFld = By.cssSelector("input[type='number']");
-		String actualQuantity = driver.findElement(productQuantityFld).getAttribute("value");
-		
-		Assert.assertEquals(quantity,Integer.parseInt(actualQuantity));
+		CartPage cartPage = new CartPage(driver);
+
+		Assert.assertEquals(productName, cartPage.getProductName());
+		Assert.assertEquals(quantity, cartPage.getProductQuantity());
 	}
-	
-	
+
 	@Given("I'm guest customer")
 	public void i_m_guest_customer() {
 		driver = DriverFactory.getDriver();
-		new StorePage(driver).load("https://askomdch.com/store");   
+		new StorePage(driver).load("https://askomdch.com/store");
 	}
 
 	@Given("I have a product in the cart")
@@ -56,49 +53,32 @@ public class MyStepDefinitions {
 
 	@Given("I'm on the checkout page")
 	public void i_m_on_the_checkout_page() {
-		By proceedToCheckoutBtn = By.cssSelector(".checkout-button");
-		driver.findElement(proceedToCheckoutBtn).click();
+		
+		new CartPage(driver).checkout();
 	}
 
 	@When("I provide billing details")
-	public void i_provide_billing_details(List<Map<String , String>> billingDetails) {
-	    By billingFirstnameFld = By.id("billing_first_name");
-	    By billingLastNameFld = By.id("billing_last_name");
-	    By billingAddressOneFld = By.id("billing_address_1");
-	    By billingCityFld = By.id("billing_city");
-	    By billingStateDropDown = By.id("billing_state");
-	    By billingZipFld = By.id("billing_postcode");
-	    By billingEmailFld = By.id("billing_email");
-	    
-	    driver.findElement(billingFirstnameFld).clear();
-	    driver.findElement(billingFirstnameFld).sendKeys(billingDetails.get(0).get("firstname"));
-	    driver.findElement(billingLastNameFld).clear();
-	    driver.findElement(billingLastNameFld).sendKeys(billingDetails.get(0).get("lastname"));
-	    driver.findElement(billingAddressOneFld).clear();
-	    driver.findElement(billingAddressOneFld).sendKeys(billingDetails.get(0).get("address_line1"));
-	    driver.findElement(billingCityFld).clear();
-	    driver.findElement(billingCityFld).sendKeys(billingDetails.get(0).get("city"));
-	    Select select = new Select(driver.findElement(billingStateDropDown));
-	    select.selectByVisibleText(billingDetails.get(0).get("state"));
-	    driver.findElement(billingZipFld).clear();
-	    driver.findElement(billingZipFld).sendKeys(billingDetails.get(0).get("zip"));
-	    driver.findElement(billingEmailFld).clear();
-	    driver.findElement(billingEmailFld).sendKeys(billingDetails.get(0).get("email"));
+	public void i_provide_billing_details(List<Map<String, String>> billingDetails) {
 
+		CheckoutPage checkoutPage = new CheckoutPage(driver);
+
+//		checkoutPage.enterBillingFirstName(billingDetails.get(0).get("firstName"));
+		// like above we can call individual methods or use a single method
+
+		checkoutPage.setBillingDetails(billingDetails.get(0).get("firstname"), billingDetails.get(0).get("lastname"),
+				billingDetails.get(0).get("address_line1"), billingDetails.get(0).get("city"),
+				billingDetails.get(0).get("state"), billingDetails.get(0).get("zip"),
+				billingDetails.get(0).get("email"));
 	}
 
 	@When("I place an order")
-	public void i_place_an_order() throws InterruptedException {
-		By placeOrderBtn = By.id("place_order");
-		driver.findElement(placeOrderBtn).click();
-		Thread.sleep(5000);
+	public void i_place_an_order() {
+		new CheckoutPage(driver).placeOrder();
 	}
 
 	@Then("the order should be placed successfully")
 	public void the_order_should_be_placed_successfully() {
-		
-	    By noticeTxt = By.cssSelector(".woocommerce-notice");
-	    String actualNoticeMsg = driver.findElement(noticeTxt).getText();
-	    Assert.assertEquals("Thank you. Your order has been received.", actualNoticeMsg);
+
+		Assert.assertEquals("Thank you. Your order has been received.", new CheckoutPage(driver).getNotice());
 	}
 }
