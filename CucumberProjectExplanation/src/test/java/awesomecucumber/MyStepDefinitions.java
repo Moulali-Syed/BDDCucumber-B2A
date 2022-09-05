@@ -7,10 +7,13 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Select;
 
+import awesomecucumber.constants.EndPoint;
+import awesomecucumber.constants.MyConstants;
 import awesomecucumber.factory.DriverFactory;
 import awesomecucumber.pages.CartPage;
 import awesomecucumber.pages.CheckoutPage;
 import awesomecucumber.pages.StorePage;
+import awesomecucumber.utils.ConfigLoader;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -30,7 +33,7 @@ public class MyStepDefinitions {
 	@Given("I'm on the Store Page")
 	public void i_m_on_the_store_page() {
 		driver = DriverFactory.getDriver();
-		new StorePage(driver).load("https://askomdch.com/store");
+		new StorePage(driver).load(EndPoint.STORE.url);
 	}
 
 	@When("I add a {string} to the cart")
@@ -50,7 +53,7 @@ public class MyStepDefinitions {
 	@Given("I'm guest customer")
 	public void i_m_guest_customer() {
 		driver = DriverFactory.getDriver();
-		new StorePage(driver).load("https://askomdch.com/store");
+		new StorePage(driver).load(MyConstants.STORE);
 	}
 
 	@Given("I have a product in the cart")
@@ -65,17 +68,20 @@ public class MyStepDefinitions {
 	}
 
 	@When("I provide billing details")
-	public void i_provide_billing_details(List<Map<String, String>> billingDetails) {
+	public void i_provide_billing_details() {
 
 		CheckoutPage checkoutPage = new CheckoutPage(driver);
 
 //		checkoutPage.enterBillingFirstName(billingDetails.get(0).get("firstName"));
 		// like above we can call individual methods or use a single method
 
-		checkoutPage.setBillingDetails(billingDetails.get(0).get("firstname"), billingDetails.get(0).get("lastname"),
-				billingDetails.get(0).get("address_line1"), billingDetails.get(0).get("city"),
-				billingDetails.get(0).get("state"), billingDetails.get(0).get("zip"),
-				billingDetails.get(0).get("email"));
+		checkoutPage.setBillingDetails(billingFirstName,
+				billingLastName,
+				billingAddressOne,
+				billingCity,
+				billingStateName,
+				billingZip,
+				billingEmail);
 	}
 
 	@When("I place an order")

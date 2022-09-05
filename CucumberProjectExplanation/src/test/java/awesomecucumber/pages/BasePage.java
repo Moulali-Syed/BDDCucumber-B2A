@@ -6,6 +6,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import awesomecucumber.utils.ConfigLoader;
+
 public class BasePage {
 	
 	protected WebDriver driver;
@@ -19,8 +21,8 @@ public class BasePage {
 	}
 
 	//load a page
-	public void load(String url) {
-		driver.get(url);
+	public void load(String endPoint) {   // use the singleton class in BasePage
+		driver.get(ConfigLoader.getInstance().getBaseUrl()+endPoint);
 	}
 	
 }

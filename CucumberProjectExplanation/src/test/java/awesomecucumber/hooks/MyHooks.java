@@ -12,7 +12,12 @@ public class MyHooks {
 	
 	@Before
 	public void before() {
-		driver = DriverFactory.initializeDriver();
+		
+		//if we execute from IDE it will run on chrome
+		driver = DriverFactory.initializeDriver(System.getProperty("browser","chrome"));
+		
+		//to run thru maven
+//		mvn clean test -Dbrowser=firefox;
 	}
 	
 	

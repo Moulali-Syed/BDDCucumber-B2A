@@ -1,0 +1,74 @@
+Step1:
+inside constants package , create a ENUM EnvType
+
+package awesomecucumber.constants;
+
+public enum EnvType {
+
+	PROD,
+	STAGE
+}
+
+
+
+Step2:
+The thing that changes for multiple env is endpoint , so create seperate properties file like prod_config.properties , stage_config.properties
+
+data of files 
+file1
+
+baseUrl=https://prod.askomdch.com
+
+file2
+baseUrl=https://askomdch.com
+
+
+
+Step3:
+make ConfigLoader class either accept from maven commandline or have a default value for the area details
+
+package awesomecucumber.utils;
+
+import java.util.Properties;
+
+import awesomecucumber.constants.EnvType;
+
+public class ConfigLoader {
+
+	private final Properties properties;
+	private static ConfigLoader configLoader;
+	
+	private ConfigLoader() {
+		String env = System.getProperty("env",String.valueOf(EnvType.STAGE));//********************
+		switch(EnvType.valueOf(env)) {
+		case PROD:
+			properties = PropertyUtils.propertyLoader("src/test/resources/prod_config.properties");
+			break;
+		case STAGE:
+			properties = PropertyUtils.propertyLoader("src/test/resources/config.properties");
+			break;
+		default:
+			throw new IllegalStateException("INVALID ENV: "+env);
+			
+		}
+		
+	}
+	
+	public static ConfigLoader getInstance() {
+		if(configLoader == null) {
+			configLoader = new ConfigLoader();
+		}
+		return configLoader;
+	}
+	
+	public String getBaseUrl() {
+		String prop = properties.getProperty("baseUrl");
+		if(prop!=null) return prop;
+		else throw new RuntimeException("property baseUrl is not specified in the stg_config.properties file");
+	}
+}
+
+
+
+now we can run thru cmd
+mvn clean test -Denv=PROD

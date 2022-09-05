@@ -1,0 +1,56 @@
+the endpoints are also constants we can store them in enum and access
+
+	@Given("I'm on the Store Page")
+	public void i_m_on_the_store_page() {
+		driver = DriverFactory.getDriver();
+		new StorePage(driver).load("/store");
+	}
+
+
+create a package inside src/test/java/awesomecucumber - name it constants
+
+create a Enum EndPoint
+
+package awesomecucumber.constants;
+
+public enum EndPoint {
+
+	
+	STORE("/store"),
+	ACCOUNT("/account");
+	
+	public final String url;
+	
+	EndPoint(String url){
+		this.url = url;
+	}
+}
+
+
+or we can create a class with static final instance variables
+
+package awesomecucumber.constants;
+
+public class MyConstants {
+
+	public static final String STORE = "/store";
+	
+	//then we can use className.variableName to access these
+}
+
+
+
+Now we can use them in step definition file
+
+	@Given("I'm on the Store Page")
+	public void i_m_on_the_store_page() {
+		driver = DriverFactory.getDriver();
+		new StorePage(driver).load(EndPoint.STORE.url);
+	}
+
+
+	@Given("I'm guest customer")
+	public void i_m_guest_customer() {
+		driver = DriverFactory.getDriver();
+		new StorePage(driver).load(MyConstants.STORE);
+	}

@@ -1,0 +1,50 @@
+Under pages package create a class PageFactoryManager
+
+instead creating a new instance of page everytime we can use this class and define all page classes instance variables and
+their methods that returns their object
+
+
+package awesomecucumber.pages;
+
+import org.openqa.selenium.WebDriver;
+
+public class PageFactoryManager {
+
+	private static StorePage storePage;
+	private static CartPage cartPage;
+	private static CheckoutPage checkoutPage;
+	
+	public static StorePage getStorePage(WebDriver driver) {
+		return storePage == null ? new StorePage(driver) : storePage;
+	}
+	
+	public static CartPage getCartPage(WebDriver driver) {
+		return cartPage == null ? new CartPage(driver) : cartPage;
+	}
+	
+	public static CheckoutPage getCheckoutPage(WebDriver driver) {
+		return checkoutPage == null ? new CheckoutPage(driver) : checkoutPage;
+	}
+
+}
+
+
+
+Then in stepdef files:
+1.create a private final instance variable of class of type class - private final CartPage cartPage;
+2.inside the constructor call the method that returns class object and use this reference in  all the class where ever the required page class is needed
+
+public class CartStepDefinitions{
+
+	private final CartPage cartPage;
+
+	public CartStepDefinitions(TestContext context){
+		driver = context.driver;
+		cartPage = PageFactoryManager.getCartPage(context.driver);
+	}
+
+	public void iMOnTheCheckOutPage(){
+		cartPage.checkout();
+	}
+
+}

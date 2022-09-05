@@ -1,0 +1,117 @@
+base URI will be same for all urls, but end point will differ
+baseURI is a global property
+
+https://askomdch.com/ -- is base URI
+store  -- is endpoint
+
+
+we can use singleton design pattern
+
+under src/test/resources - create a file config.properties
+
+with content
+baseUrl=https://askomdch.com
+
+
+under CucumberProjectExplanation/src/test/java/awesomecucumber , create a package utils
+
+package awesomecucumber.utils;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
+public class PropertyUtils {
+
+	
+	public static Properties propertyLoader(String filePath) {
+		Properties properties = new Properties();
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(filePath));
+			try {
+				properties.load(reader);
+				reader.close();
+			}catch(IOException e) {
+				e.printStackTrace();
+				throw new RuntimeException("failed to load properties file "+filePath);
+			}
+		}catch(FileNotFoundException e) {
+			e.printStackTrace();
+			throw new RuntimeException("properties file not found at "+filePath);
+		}
+		return properties;
+	}
+}
+
+create one more class - ConfigLoader
+
+
+package awesomecucumber.utils;
+
+import java.util.Properties;
+
+public class ConfigLoader {
+
+	private final Properties properties;
+	private static ConfigLoader configLoader;
+	
+	private ConfigLoader() {
+		properties = PropertyUtils.propertyLoader("src/test/resources/config.properties");
+		
+	}
+	
+	public static ConfigLoader getInstance() {
+		if(configLoader == null) {
+			configLoader = new ConfigLoader();
+		}
+		return configLoader;
+	}
+	
+	public String getBaseUrl() {
+		String prop = properties.getProperty("baseUrl");
+		if(prop!=null) return prop;
+		else throw new RuntimeException("property baseUrl is not specified in the stg_config.properties file");
+	}
+}
+
+
+package awesomecucumber.pages;
+
+import java.time.Duration;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import awesomecucumber.utils.ConfigLoader;
+
+public class BasePage {
+	
+	protected WebDriver driver;
+	protected WebDriverWait wait;
+
+	//constructor
+	public BasePage(WebDriver driver) {
+		this.driver = driver;
+		wait = new WebDriverWait(driver,Duration.ofSeconds(15));
+		PageFactory.initElements(driver, this);
+	}
+
+	//load a page
+	public void load(String endPoint) {   // use the singleton class in BasePage  ******************************
+		driver.get(ConfigLoader.getInstance().getBaseUrl()+endPoint);
+	}
+	
+}
+
+
+Now we can use this in the step definition file , pass only the endpoint
+
+	@Given("I'm on the Store Page")
+	public void i_m_on_the_store_page() {
+		driver = DriverFactory.getDriver();
+		new StorePage(driver).load("/store");
+	}
